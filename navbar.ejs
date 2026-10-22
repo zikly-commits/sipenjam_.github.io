@@ -1,0 +1,52 @@
+<header class="h-16 bg-white border-b border-slate-200 px-4 md:px-6 flex items-center justify-between z-20 sticky top-0 shadow-sm">
+    <div class="flex items-center gap-3 text-xs text-slate-500">
+        <button onclick="toggleMobileSidebar()" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+            <i class="fas fa-bars text-lg"></i>
+        </button>
+        <i class="fas fa-house text-slate-400 hidden sm:inline-block"></i>
+        <span class="hidden sm:inline-block">/</span>
+        <span class="font-semibold text-slate-800 capitalize"><%- h(str_replace('-', ' ', page)) %></span>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <div class="relative">
+            <button onclick="toggleNotificationsMenu()" class="relative p-2.5 rounded-xl hover:bg-slate-100 text-slate-600 transition">
+                <i class="fas fa-bell text-base"></i>
+                <% if (unreadCount > 0) {  %>
+                    <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
+                <% }  %>
+            </button>
+
+            <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-100 p-4 z-50">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+                    <h4 class="font-bold text-slate-800 text-xs flex items-center gap-2">
+                        <i class="fas fa-bell text-emerald-600"></i> Notifikasi (<%- unreadCount %>)
+                    </h4>
+                </div>
+                <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                    <% if (empty(notifications)) {  %>
+                        <p class="text-center text-xs text-slate-400 py-4">Tidak ada notifikasi.</p>
+                    <% } else {  %>
+                        <% (notifications).forEach(function(n) {  %>
+                            <div class="p-2.5 rounded-xl <%- n.is_read ? 'bg-white' : 'bg-emerald-50/50 border border-emerald-100' %> text-xs">
+                                <p class="font-bold text-slate-800"><%- h(n.title) %></p>
+                                <p class="text-slate-600 text-[11px] mt-0.5"><%- h(n.message) %></p>
+                                <span class="text-[9px] text-slate-400 mt-1 block"><%- date("d/m/Y H:i", strtotime(n.created_at)) %></span>
+                            </div>
+                        <% });  %>
+                    <% }  %>
+                </div>
+            </div>
+        </div>
+
+        <a href="?page=profil" class="flex items-center gap-3 pl-4 border-l border-slate-200 cursor-pointer hover:opacity-80 transition" title="Lihat & Edit Profil">
+            <div class="text-right hidden sm:block">
+                <p class="text-xs font-bold text-slate-800"><%- h(currentUser.name) %></p>
+                <p class="text-[10px] text-slate-500"><%- h(currentUser.email) %></p>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-sm shadow overflow-hidden">
+                <%- strtoupper(substr(currentUser.name, 0, 1)) %>
+            </div>
+        </a>
+    </div>
+</header>

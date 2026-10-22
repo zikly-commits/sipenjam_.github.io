@@ -1,0 +1,47 @@
+<aside class="sidebar-transition w-64 h-full bg-slate-900 text-slate-300 flex flex-col z-30 shadow-2xl flex-shrink-0">
+    <div class="h-16 px-5 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-600/30">
+                <img src="./assets/images/logo-kemenag.png" alt="Logo Kementerian Agama" class="w-7 h-7 object-contain">
+            </div>
+            <div class="truncate">
+                <h2 class="text-white font-bold text-xs tracking-wide">SIPENJAM</h2>
+                <p class="text-[9px] text-emerald-400 font-semibold truncate">Kanwil Kemenag Babel</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+        <div class="px-3 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Menu Navigasi</div>
+        <% (navs).forEach(function(item) {  %>
+            <a href="?page=<%- item.id %>" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl font-medium text-xs transition <%- page === item.id ? 'bg-emerald-700 text-white font-semibold shadow-md shadow-emerald-700/30' : 'hover:bg-slate-800 hover:text-white text-slate-400' %>">
+                <div class="flex items-center gap-3">
+                    <i class="fas <%- item.icon %> w-4 text-center"></i>
+                    <span><%- item.label %></span>
+                </div>
+                <% if (!empty(item.badge)) {  %>
+                    <span class="bg-amber-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-full"><%- item.badge %></span>
+                <% }  %>
+            </a>
+        <% });  %>
+    </div>
+
+    <div class="p-4 border-t border-slate-800 bg-slate-950/50">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-bold text-white text-xs">
+                    <%- strtoupper(substr(currentUser.name, 0, 1)) %>
+                </div>
+                <div class="truncate">
+                    <p class="text-xs font-semibold text-white truncate"><%- h(currentUser.name) %></p>
+                    <p class="text-[10px] text-emerald-400 capitalize flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span> <%- currentUser.role %>
+                    </p>
+                </div>
+            </div>
+            <a href="actions/logout" title="Keluar Sistem" class="text-slate-400 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-800 transition">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+</aside>

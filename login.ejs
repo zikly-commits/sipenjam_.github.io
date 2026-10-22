@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SIPENJAM - Kanwil Kemenag Prov. Bangka Belitung</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+</head>
+<body class="h-full text-slate-800 antialiased bg-slate-50">
+    <div 
+        class="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4"
+        style="background-image: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.55)), url('./assets/images/Gedungkemenagbabel.png');"
+    >
+        <div class="bg-white/20 backdrop-blur-md rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-white/30">
+            <div class="bg-transparent p-8 text-center relative text-white">
+                <div class="flex items-center justify-center mx-auto mb-5">
+                    <img src="./assets/images/logo-kemenag.png" alt="Logo Kementerian Agama" class="w-20 h-20 object-contain drop-shadow-[0_2px_5px_rgba(0,0,0,0.7)]">
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-wide text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">SIPENJAM</h1>
+                <p class="text-sm font-semibold mt-2 text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">Sistem Informasi Peminjaman Ruangan &amp; Kendaraan Dinas</p>
+                <p class="text-xs font-bold mt-2 uppercase tracking-widest text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.9)]">Kanwil Kemenag Prov. Bangka Belitung</p>
+            </div>
+            
+            <div class="p-8 bg-transparent">
+                <form action="actions/login" method="POST" class="space-y-5">
+                    <% if (isset(query.error)) {  %>
+                        <div class="p-3 rounded-xl bg-rose-500/20 border border-rose-200/40 text-white text-xs flex items-center gap-2 backdrop-blur-sm">
+                            <i class="fas fa-triangle-exclamation text-base text-rose-300"></i>
+                            <span>Email atau password salah! Silakan periksa kembali.</span>
+                        </div>
+                    <% }  %>
+
+                    <!-- Input Email -->
+                    <div>
+                        <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                            Email Dinas / Instansi
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                            <input type="email" name="email" required placeholder="••••••••" class="w-full pl-11 pr-4 py-3 rounded-xl border border-white/30 bg-black/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-xs backdrop-blur-sm">
+                        </div>
+                    </div>
+
+                    <!-- Input Password -->
+                    <div>
+                        <label class="block text-xs font-bold text-white uppercase tracking-wider mb-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]">
+                            Password
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/70"></i>
+                            <input type="password" id="login-password" name="password" required placeholder="••••••••" class="w-full pl-11 pr-12 py-3 rounded-xl border border-white/30 bg-black/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent text-xs backdrop-blur-sm">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors">
+                                <i id="eye-icon" class="fas fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-emerald-900/40 transition duration-200 text-xs">
+                        Masuk ke Sistem <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/login.js"></script>
+</body>
+</html>

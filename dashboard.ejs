@@ -1,0 +1,159 @@
+<div class="space-y-6">
+    <div class="bg-gradient-to-r from-emerald-900 via-emerald-800 to-slate-900 rounded-3xl p-6 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+            <span class="bg-white/10 text-emerald-200 text-xs px-3 py-1 rounded-full font-medium border border-white/10"><%- strtoupper(currentUser.role) %> Panel</span>
+            <h2 class="text-2xl font-bold mt-2">Selamat Datang, <%- h(currentUser.name) %></h2>
+            <p class="text-emerald-100 text-xs mt-1">Kelola permohonan peminjaman fasilitas ruangan dan kendaraan dinas Kanwil Kemenag Babel.</p>
+        </div>
+        <% if (currentUser.role === 'admin') {  %>
+            <div class="flex gap-2">
+                <a href="?page=persetujuan" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center gap-2 shadow-lg">
+                    <i class="fas fa-clipboard-check"></i> Persetujuan Pending (<%- pendingCount %>)
+                </a>
+            </div>
+        <% }  %>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase">Total Ruangan</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1"><%- totalRuangan %></h3>
+                <p class="text-[11px] text-emerald-600 mt-1"><i class="fas fa-check-circle"></i> Fasilitas Aktif</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-xl">
+                <i class="fas fa-door-open"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase">Total Kendaraan</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1"><%- totalKendaraan %></h3>
+                <p class="text-[11px] text-emerald-600 mt-1"><i class="fas fa-car"></i> Armada Mobil & Motor</p>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-xl">
+                <i class="fas fa-car-side"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase">Total Pegawai</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1"><%- totalPegawai %></h3>
+                <p class="text-[11px] text-purple-600 mt-1"><i class="fas fa-id-card"></i> Pengguna Terdaftar</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-xl">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+            <div>
+                <p class="text-xs font-semibold text-slate-400 uppercase">Peminjaman Hari Ini</p>
+                <h3 class="text-2xl font-bold text-slate-800 mt-1"><%- todayBookings %></h3>
+                <p class="text-[11px] text-amber-600 mt-1"><i class="fas fa-calendar-day"></i> Agenda Berjalan</p>
+            </div>
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-xl">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-xs font-medium text-slate-500">Menunggu Persetujuan</p>
+            <p class="text-xl font-bold text-amber-600 mt-1"><%- pendingCount %></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-xs font-medium text-slate-500">Peminjaman Disetujui</p>
+            <p class="text-xl font-bold text-emerald-600 mt-1"><%- approvedCount %></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-xs font-medium text-slate-500">Peminjaman Ditolak</p>
+            <p class="text-xl font-bold text-rose-600 mt-1"><%- rejectedCount %></p>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+            <p class="text-xs font-medium text-slate-500">Kendaraan Sedang Digunakan</p>
+            <p class="text-xl font-bold text-blue-600 mt-1"><%- vehiclesInUseCount %></p>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+            <h3 class="text-xs font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-line text-emerald-600"></i> Trend Peminjaman Per Bulan
+            </h3>
+            <div class="h-64">
+                <canvas id="chart-monthly"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+            <h3 class="text-xs font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-pie text-emerald-600"></i> Peminjaman Berdasarkan Fasilitas
+            </h3>
+            <div class="h-64 flex items-center justify-center">
+                <canvas id="chart-facility"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Table -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-800">Pengajuan Peminjaman Terbaru</h3>
+            <a href="?page=riwayat" class="text-xs text-emerald-600 hover:underline font-medium">Lihat Semua</a>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-100">
+                    <tr>
+                        <th class="p-4">No</th>
+                        <th class="p-4">Nama Pemohon</th>
+                        <th class="p-4">Jenis</th>
+                        <th class="p-4">Fasilitas</th>
+                        <th class="p-4">Tanggal & Jam</th>
+                        <th class="p-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <% if (empty(recentBookings)) {  %>
+                        <tr><td colspan="6" class="p-6 text-center text-slate-400">Belum ada pengajuan peminjaman.</td></tr>
+                    <% } else {  %>
+                        <% (recentBookings).forEach(function(b, idx) {  %>
+                            <tr class="hover:bg-slate-50/80 transition">
+                                <td class="p-4 font-medium text-slate-400"><%- idx + 1 %></td>
+                                <td class="p-4">
+                                    <p class="font-bold text-slate-800"><%- h(b.applicant_name) %></p>
+                                    <p class="text-[10px] text-slate-500"><%- h(b.department) %></p>
+                                </td>
+                                <td class="p-4"><span class="px-2 py-1 rounded-md text-[10px] font-semibold <%- b.type === 'Ruangan' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700' %>"><%- b.type %></span></td>
+                                <td class="p-4 font-semibold text-slate-700"><%- h(b.title) %></td>
+                                <td class="p-4 text-slate-600">
+                                    <div><%- b.date %></div>
+                                    <div class="text-[10px] text-slate-400"><%- b.start_time %> - <%- b.end_time %></div>
+                                </td>
+                                <td class="p-4">
+                                    <% var s = b.status;
+                                        var cls = "bg-slate-100 text-slate-700";
+                                        if (s === 'Menunggu') var cls = "bg-amber-100 text-amber-800 border border-amber-200";
+                                        if (s === 'Disetujui') var cls = "bg-emerald-100 text-emerald-800 border border-emerald-200";
+                                        if (s === 'Ditolak') var cls = "bg-rose-100 text-rose-800 border border-rose-200"; %>
+                                    <span class="px-2.5 py-1 rounded-full text-[10px] font-bold <%- cls %>"><%- s %></span>
+                                </td>
+                            </tr>
+                        <% });  %>
+                    <% }  %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Data dari PHP untuk grafik (logika grafik ada di assets/js/views/dashboard.js)
+    const dashboardData = { totalRuangan: <%- totalRuangan %>, totalKendaraan: <%- totalKendaraan %> };
+</script>
+<script src="assets/js/views/dashboard.js"></script>

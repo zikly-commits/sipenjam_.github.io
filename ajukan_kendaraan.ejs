@@ -1,0 +1,132 @@
+<div class="max-w-3xl mx-auto space-y-6">
+    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div class="flex items-center gap-3 pb-4 border-b border-slate-100">
+            <div class="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold">
+                <i class="fas fa-car text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-slate-800">Form Pengajuan Peminjaman Kendaraan Dinas</h2>
+                <p class="text-xs text-slate-500">Ajukan permohonan mobil atau sepeda motor dinas operasional.</p>
+            </div>
+        </div>
+
+        <form action="actions/booking" method="POST" class="space-y-4 mt-6">
+            <input type="hidden" name="action" value="submit_vehicle">
+            <% if (isset(query.error) && query.error === 'conflict') {  %>
+                <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-semibold flex items-center gap-2">
+                    <i class="fas fa-triangle-exclamation text-base"></i>
+                    <span>Kendaraan tidak tersedia pada waktu yang dipilih.</span>
+                </div>
+            <% }  %>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pemohon</label>
+                    <input type="text" name="applicant_name" required placeholder="Nama lengkap pemohon" class="w-full p-2.5 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">NIP / NIK</label>
+                    <input type="text" name="nip" required placeholder="NIP / NIK" class="w-full p-2.5 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Unit Kerja / Bagian</label>
+                    <input type="text" name="department" required placeholder="Contoh: Sub Bagian TU" class="w-full p-2.5 text-xs rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-600">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-2">Pilih Kendaraan Dinas</label>
+                <% if (empty(vehicles)) {  %>
+                    <p class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-500">Belum ada kendaraan yang tersedia.</p>
+                <% } else {  %>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <% (vehicles).forEach(function(v) {  %>
+                            <% var bk = vehicleBookings[v.id] ?? [];
+                                var badge = booking_badge(bk, v.status, 'Tersedia');
+                                var blocked = v.status !== 'Tersedia'; %>
+                            <label class="booking-card relative block <%- blocked ? 'cursor-not-allowed' : 'cursor-pointer' %> group" data-bookings="<%- h(json_encode(bk), ENT_QUOTES) %>" data-blocked="<%- blocked ? '1' : '0' %>">
+                                <input type="radio" name="vehicle_id" value="<%- h(v.id) %>" required <%- blocked ? 'disabled' : '' %> class="peer sr-only">
+                                <div class="card-body h-full rounded-2xl border-2 border-slate-200 bg-white overflow-hidden transition group-hover:border-emerald-300 peer-checked:border-emerald-600 peer-checked:ring-4 peer-checked:ring-emerald-600/15 peer-focus-visible:ring-4 peer-focus-visible:ring-emerald-600/30">
+                                    <div class="relative">
+                                        <img src="<%- vehicle_photo_url(v) %>" alt="Foto <%- h(v.brand + ' ' + v.model) %>" loading="lazy" class="card-photo w-full h-32 object-cover bg-slate-100 <%- blocked ? 'grayscale opacity-70' : '' %>">
+                                        <% if (badge) {  %>
+                                            <span class="absolute top-2 left-2 px-2 py-1 rounded-full text-[10px] font-bold shadow <%- badge[1] %>"><%- h(badge[0]) %></span>
+                                        <% }  %>
+                                        <span class="conflict-badge hidden absolute bottom-2 left-2 px-2 py-1 rounded-full text-[10px] font-bold shadow bg-rose-600 text-white"><i class="fas fa-ban mr-1"></i>Bentrok dengan jadwal pilihan Anda</span>
+                                    </div>
+                                    <%- render_booking_schedule(bk, 3, v.status, 'Tersedia') %>
+                                    <div class="p-3 space-y-1">
+                                        <p class="text-xs font-bold text-slate-800 leading-snug"><%- h(v.brand + ' ' + v.model) %></p>
+                                        <p class="text-[11px] text-slate-500 flex items-center gap-1.5"><i class="fas <%- v.vehicle_type === 'Mobil' ? 'fa-car text-blue-600' : 'fa-motorcycle text-amber-600' %> w-3.5"></i> <%- h(v.vehicle_type) %> &middot; <%- intval(v.year) %></p>
+                                        <p class="text-[11px] text-slate-500 flex items-center gap-1.5"><i class="fas fa-id-card w-3.5 text-emerald-600"></i> <span class="font-mono font-semibold"><%- h(v.license_plate) %></span></p>
+                                        <p class="text-[10px] text-slate-400">Kondisi: <%- h(v.condition) %></p>
+                                    </div>
+                                </div>
+                                <span class="absolute top-2 right-2 hidden peer-checked:flex w-6 h-6 items-center justify-center rounded-full bg-emerald-600 text-white text-[10px] shadow"><i class="fas fa-check"></i></span>
+                            </label>
+                        <% });  %>
+                    </div>
+                <% }  %>
+            </div>
+
+            <div class="md:w-1/2">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Penumpang</label>
+                <input type="number" name="passengers" required min="1" value="1" class="w-full p-2.5 text-xs rounded-xl border border-slate-200">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-700 uppercase">Jadwal Keberangkatan</p>
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Tanggal Berangkat</label>
+                        <input type="date" name="departure_date" value="<%- todayStr %>" min="<%- todayStr %>" required class="w-full p-2 text-xs rounded-lg border border-slate-200">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Jam Berangkat</label>
+                        <input type="time" name="departure_time" value="08:00" required class="w-full p-2 text-xs rounded-lg border border-slate-200">
+                    </div>
+                </div>
+
+                <div class="space-y-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                    <p class="text-[11px] font-bold text-slate-700 uppercase">Jadwal Kepulangan</p>
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Tanggal Kembali</label>
+                        <input type="date" name="return_date" value="<%- todayStr %>" min="<%- todayStr %>" required class="w-full p-2 text-xs rounded-lg border border-slate-200">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-slate-500 mb-1">Jam Kembali</label>
+                        <input type="time" name="return_time" value="17:00" required class="w-full p-2 text-xs rounded-lg border border-slate-200">
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Tujuan Perjalanan Dinas</label>
+                    <input type="text" name="destination" required placeholder="Contoh: Kantor Kemenag Kab. Bangka Barat" class="w-full p-2.5 text-xs rounded-xl border border-slate-200">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Pengemudi / Driver</label>
+                    <input type="text" name="driver" placeholder="Nama Driver / Mengemudi Sendiri" required class="w-full p-2.5 text-xs rounded-xl border border-slate-200">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Keperluan / Alasan Peminjaman</label>
+                <input type="text" name="purpose" required placeholder="Tugas lapangan / Pembinaan ASN" class="w-full p-2.5 text-xs rounded-xl border border-slate-200">
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Tambahan</label>
+                <input type="text" name="notes" placeholder="Catatan khusus jika ada..." class="w-full p-2.5 text-xs rounded-xl border border-slate-200">
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                <a href="?page=dashboard" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl">Batal</a>
+                <button type="submit" class="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-700/30">Kirim Pengajuan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="assets/js/views/booking_availability.js"></script>

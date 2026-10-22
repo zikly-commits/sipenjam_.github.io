@@ -1,0 +1,50 @@
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+        <div>
+            <h2 class="text-xl font-bold text-slate-800">Data Ruangan Rapat</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Kelola fasilitas tempat rapat, aula, dan ruang pertemuan instansi.</p>
+        </div>
+        <button onclick="openRoomModal()" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+            <i class="fas fa-plus"></i> Tambah Ruangan Baru
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% (rooms).forEach(function(room) {  %>
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col justify-between hover:shadow-md transition">
+                <img src="<%- room_photo_url(room) %>" alt="Foto <%- h(room.room_name) %>" loading="lazy" class="w-full h-40 object-cover bg-slate-100">
+                <% var bk = roomBookings[room.id] ?? []; var effStatus = auto_item_status(bk, room.status, 'room'); %>
+                <%- render_booking_schedule(bk, 3, room.status, 'Tersedia') %>
+                <div class="p-5">
+                    <div class="flex items-start justify-between gap-2 mb-3">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400"><%- room.id %></span>
+                            <h3 class="text-base font-bold text-slate-800"><%- h(room.room_name) %></h3>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold <%- effStatus === 'Tersedia' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' %>">
+                            <%- effStatus %>
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-xs text-slate-600">
+                        <p class="flex items-center gap-2"><i class="fas fa-users w-4 text-emerald-600"></i> Kapasitas: <span class="font-semibold text-slate-800"><%- room.capacity %> Orang</span></p>
+                        <p class="flex items-center gap-2"><i class="fas fa-location-dot w-4 text-emerald-600"></i> Lokasi: <%- h(room.location) %></p>
+                        <div class="mt-3 pt-3 border-t border-slate-100">
+                            <p class="text-[11px] font-semibold text-slate-500 mb-1">Fasilitas:</p>
+                            <p class="text-[11px] text-slate-600 bg-slate-50 p-2 rounded-lg border border-slate-100"><%- h(room.facilities) %></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+                    <button onclick='openRoomModal(<%- json_encode(Object.assign({}, room, {photo_url: room_photo_url(room)})) %>)' class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-medium transition">
+                        <i class="fas fa-pen mr-1"></i> Edit
+                    </button>
+                    <a href="actions/room?action=delete&id=<%- room.id %>" onclick="return confirm('Apakah Anda yakin menghapus ruangan ini?')" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg text-xs font-medium transition">
+                        <i class="fas fa-trash mr-1"></i> Hapus
+                    </a>
+                </div>
+            </div>
+        <% });  %>
+    </div>
+</div>
+
+<script src="assets/js/views/data_ruangan.js"></script>
